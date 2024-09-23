@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Report Detail</h1>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">{{ report.product.name }}</h5>
+            <p class="card-text"><strong>Date:</strong> {{ report.day }}</p>
+            <p class="card-text"><strong>Time:</strong> {{ report.start_hour }}:00 - {{ report.end_hour }}:00</p>
+            <p class="card-text"><strong>Plan:</strong> {{ report.plan }}</p>
+            <p class="card-text"><strong>Execution:</strong> {{ report.execution }}</p>
+            <p class="card-text"><strong>Efficiency:</strong> {{ report.get_efficiency|floatformat:2 }}%</p>
+            <p class="card-text"><strong>Production Line:</strong> {{ report.production_line.name }}</p>
+            <p class="card-text"><strong>Reported by:</strong> {{ report.user.username }}</p>
+            
+            {% if report.user == request.user or request.user.is_staff %}
+            <a href="{% url 'reports:report-update' report.pk %}" class="btn btn-warning">Edit</a>
+            <a href="{% url 'reports:report-delete' report.pk %}" class="btn btn-danger">Delete</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <h2 class="mb-3">Reported Problems</h2>
+
+    {% if problems %}
+        <div class="list-group mb-4">
+            {% for problem in problems %}
+            <div class="list-group-item">
+                <h5 class="mb-1">{{ problem.category.name }}</h5>
+                <p class="mb-1">{{ problem.description }}</p>
+                <small>
+                    Priority: <span class="badge bg-{% if problem.priority == 'LOW' %}secondary{% elif problem.priority == 'MEDIUM' %}info{% elif problem.priority == 'HIGH' %}warning{% else %}danger{% endif %}">
+                        {{ problem.get_priority_display }}
+                    </span>
+                    Status: <span class="badge bg-{% if problem.status == 'NEW' %}primary{% elif problem.status == 'IN_PROGRESS' %}info{% elif problem.status == 'RESOLVED' %}success{% else %}secondary{% endif %}">
+                        {{ problem.get_status_display }}
+                    </span>
+                    Breakdown: {{ problem.breakdown }}
+                    {% if problem.public %}
+                        <span class="badge bg-info">Public</span>
+                    {% endif %}
+                </small>
+                <div class="mt-2">
+                    <a href="{% url 'reports:problem-update' problem.pk %}" class="btn btn-sm btn-primary">Update Status</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No problems reported.</p>
+    {% endif %}
+
+    <h3 class="mb-3">Report a New Problem</h3>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ problem_form|crispy }}
+        <button type="submit" class="btn btn-primary">Submit Problem</button>
+    </form>
+
+    <a href="{% url 'reports:report-list' %}" class="btn btn-secondary mt-3">Back to List</a>
+</div>
+{% endblock %}

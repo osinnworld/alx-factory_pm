@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="mb-4">{{ category.name }}</h1>
+
+<p>{{ category.description }}</p>
+
+<h2 class="mt-4 mb-3">Problems in this category</h2>
+
+{% if category.problems.all %}
+    <div class="list-group">
+        {% for problem in category.problems.all %}
+            <div class="list-group-item">
+                <h5 class="mb-1">Problem ID: {{ problem.problem_id }}</h5>
+                <p class="mb-1">{{ problem.description }}</p>
+                <small>Reported by: {{ problem.user.username }} on {{ problem.created|date:"F d, Y" }}</small>
+                <br>
+                <small>Status: {{ problem.get_status_display }} | Priority: {{ problem.get_priority_display }}</small>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No problems reported in this category.</p>
+{% endif %}
+
+<div class="mt-4">
+    <a href="{% url 'reports:problem-category-update' category.pk %}" class="btn btn-warning">Edit Category</a>
+    <a href="{% url 'reports:problem-category-delete' category.pk %}" class="btn btn-danger">Delete Category</a>
+    <a href="{% url 'reports:problem-category-list' %}" class="btn btn-secondary">Back to Categories</a>
+</div>
+{% endblock %}
+</antArt

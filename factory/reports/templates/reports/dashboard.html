@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="mb-4">Dashboard</h1>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Overall Performance (Last 30 Days)
+            </div>
+            <div class="card-body">
+                <p>Total Reports: {{ overall_performance.total_reports }}</p>
+                <p>Total Planned: {{ overall_performance.total_plan }}</p>
+                <p>Total Executed: {{ overall_performance.total_execution }}</p>
+                {% if overall_performance.total_plan > 0 %}
+                    <p>Execution Rate: {{ overall_performance.total_execution|floatformat:2 }}%</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Problem Statistics (Last 30 Days)
+            </div>
+            <div class="card-body">
+                <p>Total Problems: {{ problem_stats.total }}</p>
+                <h6>By Priority:</h6>
+                <ul>
+                    {% for priority in problem_stats.by_priority %}
+                        <li>{{ priority.priority }}: {{ priority.count }}</li>
+                    {% endfor %}
+                </ul>
+                <h6>By Status:</h6>
+                <ul>
+                    {% for status in problem_stats.by_status %}
+                        <li>{{ status.status }}: {{ status.count }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Production Line Performance (Last 30 Days)
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Production Line</th>
+                                <th>Reports</th>
+                                <th>Problems</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for line in production_lines %}
+                                <tr>
+                                    <td>{{ line.name }}</td>
+                                    <td>{{ line.report_count }}</td>
+                                    <td>{{ line.problem_count }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Recent Reports
+            </div>
+            <div class="card-body">
+                {% if recent_reports %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Product</th>
+                                    <th>Plan</th>
+                                    <th>Execution</th>
+                                    <th>Production Line</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for report in recent_reports %}
+                                    <tr>
+                                        <td>{{ report.day }}</td>
+                                        <td>{{ report.product.name }}</td>
+                                        <td>{{ report.plan }}</td>
+                                        <td>{{ report.execution }}</td>
+                                        <td>{{ report.production_line.name }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p>No recent reports found. <a href="{% url 'reports:report-create' %}">Create a new report</a>.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

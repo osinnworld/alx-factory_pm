@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="mb-4">Reports</h1>
+
+<div class="mb-3">
+    <a href="{% url 'reports:report-create' %}" class="btn btn-primary">Create New Report</a>
+</div>
+
+<form method="get" class="mb-3">
+    <div class="form-group">
+        <label for="production_line">Filter by Production Line:</label>
+        <select name="production_line" id="production_line" class="form-control">
+            <option value="">All Production Lines</option>
+            {% for line in production_lines %}
+                <option value="{{ line.name }}" {% if request.GET.production_line == line.name %}selected{% endif %}>{{ line.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-secondary">Filter</button>
+</form>
+
+{% if reports %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Product</th>
+                    <th>Production Line</th>
+                    <th>Plan</th>
+                    <th>Execution</th>
+                    <th>Efficiency</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in reports %}
+                    <tr>
+                        <td>{{ report.day }}</td>
+                        <td>{{ report.product.name }}</td>
+                        <td>{{ report.production_line.name }}</td>
+                        <td>{{ report.plan }}</td>
+                        <td>{{ report.execution }}</td>
+                        <td>{{ report.get_efficiency|floatformat:2 }}%</td>
+                        <td>
+                            <a href="{% url 'reports:report-detail' report.pk %}" class="btn btn-sm btn-info">View</a>
+                            <a href="{% url 'reports:report-update' report.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="{% url 'reports:report-delete' report.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    {% if is_paginated %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+                {% endif %}
+                
+                <li class="page-item active"><a class="page-link" href="#">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</a></li>
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% else %}
+    <p>No reports found.</p>
+{% endif %}
+{% endblock %}

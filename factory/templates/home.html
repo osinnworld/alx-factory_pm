@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Factory Project Management{% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+        <h1 class="display-4">Welcome to Factory Project Management</h1>
+        <p class="lead">Manage your factory production reports and issues efficiently.</p>
+        <hr class="my-4">
+        <p>Get started by creating a new report or viewing existing ones.</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'reports:report-create' %}" role="button">Create New Report</a>
+        <a class="btn btn-secondary btn-lg" href="{% url 'reports:report-list' %}" role="button">View Reports</a>
+    </div>
+{% endblock %}
