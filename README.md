@@ -87,6 +87,6 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Contact
 
-Your Name - your.email@example.com
+shemogata@gmail.com
 
-Project Link: [https://github.com/yourusername/factory-project-management](https://github.com/yourusername/factory-project-management)
+Project Link: COMING SOON!!
