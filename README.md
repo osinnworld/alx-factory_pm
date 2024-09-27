@@ -53,7 +53,7 @@ The Factory Project Management System is a comprehensive web application designe
    python manage.py runserver
    ```
 
-7. Access the application at `http://localhost:8000`
+7. Access the application at `http://localhost:8080`
 
 ## Usage
 
